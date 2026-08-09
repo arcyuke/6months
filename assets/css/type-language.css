@@ -9,13 +9,8 @@ body *:not(svg):not(path){
   font-family:var(--sixm-hand)!important;
 }
 
-body{
-  letter-spacing:.005em!important;
-}
-
-button,input,textarea,select{
-  font-family:var(--sixm-hand)!important;
-}
+body{letter-spacing:.005em!important}
+button,input,textarea,select{font-family:var(--sixm-hand)!important}
 
 .logo,.home-logo,.nav-links a,.header-telegram,
 .page-title,.section-heading h2,.product-title,.detail-title,
@@ -33,17 +28,14 @@ button,input,textarea,select{
 
 /* language gate: site stays hidden until a language is chosen */
 html.sixm-lang-pending,
-html.sixm-lang-pending body{
-  background:#000!important;
-}
+html.sixm-lang-pending body{background:#000!important}
 html.sixm-lang-pending body{
   overflow:hidden!important;
   opacity:1!important;
   transform:none!important;
 }
-html.sixm-lang-pending body > *:not(.sixm-language-gate){
-  visibility:hidden!important;
-}
+html.sixm-lang-pending body > *:not(.sixm-language-gate){visibility:hidden!important}
+html.sixm-lang-pending .sixm-language-gate{visibility:visible!important}
 
 .sixm-language-gate{
   position:fixed;
@@ -55,6 +47,7 @@ html.sixm-lang-pending body > *:not(.sixm-language-gate){
   background:#000;
   color:#f3f3f3;
   opacity:1;
+  visibility:visible!important;
   transition:opacity .18s ease;
 }
 .sixm-language-gate.is-leaving{opacity:0}
