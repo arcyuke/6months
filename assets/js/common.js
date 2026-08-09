@@ -7,7 +7,8 @@ const TIKTOK_URL = 'https://www.tiktok.com/@6ixmonth.s';
 
 (function bootstrapRefreshStyles() {
   document.querySelectorAll('link[href*="archive-smolder.css"]').forEach((link) => link.remove());
-  if (document.querySelector('link[data-6m-refresh]')) return;
+  const existing = [...document.querySelectorAll('link[rel="stylesheet"]')].find((link) => link.href.includes('/assets/css/refresh.css'));
+  if (existing) { existing.dataset.sixmRefresh = '1'; return; }
   const link = document.createElement('link');
   link.rel = 'stylesheet';
   link.href = `${SITE_ROOT}assets/css/refresh.css?v=refresh1`;
