@@ -9,16 +9,18 @@
   <link rel="stylesheet" href="../assets/css/bag.css">
   <link rel="stylesheet" href="../assets/css/mobilebasic.css">
   <link rel="stylesheet" href="../assets/css/mobile-spacing-footer.css">
-  <link rel="stylesheet" href="../assets/css/archive-smolder.css?v=smolder2">
+  <link rel="stylesheet" href="../assets/css/refresh.css?v=refresh1">
   <link rel="icon" href="../6months_logo_flow.gif?v=favicon1" type="image/gif">
 </head>
 <body class="mobile-basic">
   <header class="site-header">
-    <nav class="nav-shell">
+    <nav class="nav-shell" aria-label="главная навигация">
       <a class="logo logo-mark" href="index.html" aria-label="6 months — на главную"><img src="../6months_logo_flow.gif?v=logo1" alt=""></a>
       <div class="nav-links">
-        <a href="index.html#catalog">одежда</a>
-        <a href="about.html">о бренде</a>
+        <a class="cart-icon-link" href="bag.html" aria-label="корзина">
+          <svg class="cart-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 4.5h2.2l1.4 9.1h10.1l2.1-6.5H7.1M9.2 18.5a1.25 1.25 0 1 0 0 .01M17.2 18.5a1.25 1.25 0 1 0 0 .01" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="cart-icon-count" id="cart-count">0</span>
+        </a>
       </div>
     </nav>
   </header>
