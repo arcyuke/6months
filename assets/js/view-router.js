@@ -13,14 +13,9 @@
     catch { return null; }
   }
 
-  if (requested === 'desktop' || requested === 'mobile') {
-    savePreference(requested);
-  }
+  if (requested === 'desktop' || requested === 'mobile') savePreference(requested);
 
-  const preference = requested === 'desktop' || requested === 'mobile'
-    ? requested
-    : readPreference();
-
+  const preference = requested === 'desktop' || requested === 'mobile' ? requested : readPreference();
   const path = window.location.pathname;
   const onMobileVersion = /\/mobilebasic(?:\/|$)/.test(path);
   const onAdmin = /\/admin\.html$/.test(path);
@@ -29,7 +24,6 @@
   const touchDevice = window.matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0;
   const mobileBrowser = /Android|iPhone|iPod|Mobile|IEMobile|Windows Phone|Telegram/i.test(navigator.userAgent);
   const looksLikePhone = narrowScreen && (touchDevice || mobileBrowser);
-
   const shouldUseMobile = preference === 'mobile' || (preference !== 'desktop' && looksLikePhone);
 
   function cleanSearch() {
@@ -43,6 +37,7 @@
     if (/\/product_months\.html$/.test(path)) return `mobilebasic/product.html${cleanSearch()}${window.location.hash}`;
     if (/\/bag\.html$/.test(path)) return `mobilebasic/bag.html${cleanSearch()}${window.location.hash}`;
     if (/\/about\.html$/.test(path)) return `mobilebasic/about.html${cleanSearch()}${window.location.hash}`;
+    if (/\/privacy\.html$/.test(path)) return `mobilebasic/privacy.html${cleanSearch()}${window.location.hash}`;
     return `mobilebasic/${cleanSearch()}${window.location.hash}`;
   }
 
@@ -50,6 +45,7 @@
     if (/\/mobilebasic\/product\.html$/.test(path)) return `../product_months.html${cleanSearch()}${window.location.hash}`;
     if (/\/mobilebasic\/bag\.html$/.test(path)) return `../bag.html${cleanSearch()}${window.location.hash}`;
     if (/\/mobilebasic\/about\.html$/.test(path)) return `../about.html${cleanSearch()}${window.location.hash}`;
+    if (/\/mobilebasic\/privacy\.html$/.test(path)) return `../privacy.html${cleanSearch()}${window.location.hash}`;
     return `../index.html${cleanSearch()}${window.location.hash}`;
   }
 
@@ -57,12 +53,10 @@
     window.location.replace(mobileTarget());
     return;
   }
-
   if (!onAdmin && onMobileVersion && !shouldUseMobile) {
     window.location.replace(desktopTarget());
     return;
   }
-
   if (requested) {
     const cleanUrl = `${window.location.pathname}${cleanSearch()}${window.location.hash}`;
     window.history.replaceState(null, '', cleanUrl);
