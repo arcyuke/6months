@@ -5,19 +5,32 @@ const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').mat
 const TELEGRAM_CHANNEL = 'https://t.me/polGodaa';
 const TIKTOK_URL = 'https://www.tiktok.com/@6ixmonth.s';
 
-(function bootstrapRefreshStyles() {
+(function bootstrapStyles() {
   document.querySelectorAll('link[href*="archive-smolder.css"]').forEach((link) => link.remove());
-  const existing = [...document.querySelectorAll('link[rel="stylesheet"]')].find((link) => link.href.includes('/assets/css/refresh.css'));
-  if (existing) {
-    existing.href = `${SITE_ROOT}assets/css/refresh.css?v=refresh2`;
-    existing.dataset.sixmRefresh = '2';
-    return;
+
+  const refresh = [...document.querySelectorAll('link[rel="stylesheet"]')].find((link) => link.href.includes('/assets/css/refresh.css'));
+  if (refresh) refresh.href = `${SITE_ROOT}assets/css/refresh.css?v=refresh2`;
+  else {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = `${SITE_ROOT}assets/css/refresh.css?v=refresh2`;
+    document.head.append(link);
   }
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = `${SITE_ROOT}assets/css/refresh.css?v=refresh2`;
-  link.dataset.sixmRefresh = '2';
-  document.head.append(link);
+
+  const rework = [...document.querySelectorAll('link[rel="stylesheet"]')].find((link) => link.href.includes('/assets/css/rework-v3.css'));
+  if (!rework) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = `${SITE_ROOT}assets/css/rework-v3.css?v=3`;
+    document.head.append(link);
+  }
+
+  document.querySelectorAll('link[rel~="icon"]').forEach((link) => link.remove());
+  const icon = document.createElement('link');
+  icon.rel = 'icon';
+  icon.type = 'image/svg+xml';
+  icon.href = `${SITE_ROOT}favicon.svg?v=2`;
+  document.head.append(icon);
 })();
 
 function cartIconSvg() {
@@ -50,7 +63,13 @@ function pageForVersion(targetVersion) {
 
 function normalizeHeader() {
   document.querySelectorAll('.site-header .nav-links').forEach((links) => {
+    if (IS_MOBILE_BASIC) {
+      links.innerHTML = `<a class="header-telegram" href="${TELEGRAM_CHANNEL}" target="_blank" rel="noreferrer">telegram</a>`;
+      return;
+    }
+
     links.innerHTML = `
+      <a class="header-telegram" href="${TELEGRAM_CHANNEL}" target="_blank" rel="noreferrer">telegram</a>
       <a class="cart-icon-link" href="bag.html" aria-label="корзина">
         ${cartIconSvg()}
         <span class="cart-icon-count" id="cart-count">0</span>
@@ -84,7 +103,7 @@ function mountFooter() {
   document.querySelectorAll('[data-view-switch]').forEach((link) => {
     link.addEventListener('click', () => {
       try { localStorage.setItem(VERSION_STORAGE_KEY, link.dataset.viewSwitch); }
-      catch { /* query parameter still switches the version */ }
+      catch { /* query parameter still switches version */ }
     });
   });
 }
@@ -138,17 +157,6 @@ function initReveal() {
   nodes.forEach((node) => observer.observe(node));
 }
 
-function initCatalogNavigation() {
-  const catalog = document.getElementById('catalog');
-  if (!catalog) return;
-  document.querySelectorAll('a[href="#catalog"]').forEach((link) => {
-    link.addEventListener('click', (event) => {
-      event.preventDefault();
-      catalog.scrollIntoView({ behavior: REDUCED_MOTION ? 'auto' : 'smooth', block: 'start' });
-    });
-  });
-}
-
 function initHomeRefresh() {
   const hero = document.querySelector('.hero');
   if (!hero || !document.getElementById('catalog')) return;
@@ -158,31 +166,52 @@ function initHomeRefresh() {
   hero.classList.add('hero-refresh');
 
   const content = hero.querySelector('.hero-content');
-  if (content) {
-    content.innerHTML = `
-      <div class="hero-actions hero-actions-refresh">
-        <a class="button button-ghost" href="#catalog">каталог</a>
-        <a class="button button-ghost" href="${TELEGRAM_CHANNEL}" target="_blank" rel="noreferrer">telegram</a>
-      </div>`;
-  }
+  if (content) content.innerHTML = '';
 
-  if (!hero.querySelector('.hero-note-left')) {
-    hero.insertAdjacentHTML('beforeend', `
-      <div class="hero-note hero-note-left" aria-label="описание бренда">
-        <span class="hero-note-label">archive / 01</span>
-        <strong>ручная<br>работа</strong>
-        <small>единичные вещи<br>ограниченные модели</small>
-      </div>
-      <div class="hero-note hero-note-right" aria-label="6 months">
-        <span class="hero-note-label accent-violet">6 months</span>
-        <strong>архив<br>2026</strong>
-        <small>distressed / reflective<br>made by hand</small>
-      </div>`);
-  }
+  hero.querySelectorAll('.hero-note').forEach((note) => note.remove());
+  hero.insertAdjacentHTML('beforeend', `
+    <div class="hero-note hero-note-left" aria-label="описание бренда">
+      <span class="hero-note-label">01 / handmade</span>
+      <strong>сделано<br>руками</strong>
+      <small>небольшие партии / каждый экземпляр немного отличается</small>
+    </div>
+    <div class="hero-note hero-note-right" aria-label="6 months">
+      <span class="hero-note-label">6 months / 2026</span>
+      <strong>время<br>оставляет след</strong>
+      <small>distressed / reflective / ручная обработка</small>
+    </div>`);
 
   const heading = document.querySelector('.catalog-section .section-heading h2');
-  if (heading) heading.textContent = 'каталог';
+  if (heading) heading.textContent = 'одежда';
   document.querySelector('.process-section')?.remove();
+}
+
+const SCRAMBLE_CHARS = '6MONTHS0123456789∆×+/•:_-';
+
+function scrambleText(node, nextText, duration = 360) {
+  if (!node) return Promise.resolve();
+  if (REDUCED_MOTION) {
+    node.textContent = nextText;
+    return Promise.resolve();
+  }
+
+  const chars = [...nextText];
+  const start = performance.now();
+  return new Promise((resolve) => {
+    function tick(now) {
+      const progress = Math.min(1, (now - start) / duration);
+      const resolved = Math.floor(progress * chars.length);
+      node.textContent = chars.map((char, index) => {
+        if (/\s/.test(char)) return char;
+        if (index < resolved || progress === 1) return char;
+        return SCRAMBLE_CHARS[(index * 7 + Math.floor(now / 35)) % SCRAMBLE_CHARS.length];
+      }).join('');
+
+      if (progress < 1) requestAnimationFrame(tick);
+      else resolve();
+    }
+    requestAnimationFrame(tick);
+  });
 }
 
 function initHistoryRotator() {
@@ -190,43 +219,54 @@ function initHistoryRotator() {
   if (!placeholder) return;
 
   const slides = [
-    { top: '6 MONTHS', accent: 'ПОЛ ГОДА', bottom: 'так переводится название', type: 'type-condensed', tone: 'tone-violet' },
-    { top: 'ДО ОДЕЖДЫ', accent: 'БЫЛИ ПРОГУЛКИ', bottom: 'канал, фотографии и обычная жизнь', type: 'type-sans', tone: 'tone-red' },
-    { top: 'ПОТОМ', accent: 'ДВЕ ВЕЩИ', bottom: 'distressed tee / reflective jeans', type: 'type-serif', tone: 'tone-violet' },
-    { top: 'ПЕРВАЯ ПАРТИЯ', accent: 'РУЧНАЯ РАБОТА', bottom: 'вырезы, обработка и детали вручную', type: 'type-mono', tone: 'tone-red' },
-    { top: 'СЕЙЧАС', accent: 'АРХИВ 2026', bottom: '6 months продолжает историю', type: 'type-condensed', tone: 'tone-violet' }
+    { top: '6 MONTHS', accent: '«ПОЛ ГОДА»', bottom: 'так переводится название' },
+    { top: 'ВРЕМЯ', accent: 'МЕНЯЕТ ВЕЩИ', bottom: 'следы и обработка становятся частью формы' },
+    { top: 'НЕ СЕРИЯ', accent: 'МАЛЫЕ ПАРТИИ', bottom: 'вещей немного, одинаковых экземпляров ещё меньше' },
+    { top: 'РУКАМИ', accent: 'НЕ КОНВЕЙЕРОМ', bottom: 'детали и обработка проходят через руки' },
+    { top: '2026', accent: 'СОБИРАЕМ ЗАНОВО', bottom: '6 months возвращается без попытки повторить прошлое' }
   ];
 
-  placeholder.innerHTML = `<div class="history-rotator" aria-live="polite"></div>`;
-  const rotator = placeholder.querySelector('.history-rotator');
-  let index = 0;
+  placeholder.innerHTML = `
+    <div class="history-rotator" aria-live="polite">
+      <span class="history-top"></span>
+      <strong class="history-accent"></strong>
+      <span class="history-bottom"></span>
+    </div>`;
 
-  const render = () => {
-    const slide = slides[index];
-    rotator.className = `history-rotator ${slide.type} ${slide.tone}`;
-    rotator.innerHTML = `
-      <span class="history-top">${slide.top}</span>
-      <strong class="history-accent">${slide.accent}</strong>
-      <span class="history-bottom">${slide.bottom}</span>`;
+  const top = placeholder.querySelector('.history-top');
+  const accent = placeholder.querySelector('.history-accent');
+  const bottom = placeholder.querySelector('.history-bottom');
+  let index = 0;
+  let busy = false;
+
+  const setSlide = async (slide, initial = false) => {
+    if (initial || REDUCED_MOTION) {
+      top.textContent = slide.top;
+      accent.textContent = slide.accent;
+      bottom.textContent = slide.bottom;
+      return;
+    }
+    await Promise.all([
+      scrambleText(top, slide.top, 230),
+      scrambleText(accent, slide.accent, 420),
+      scrambleText(bottom, slide.bottom, 520)
+    ]);
   };
 
-  render();
+  setSlide(slides[0], true);
   if (REDUCED_MOTION) return;
 
-  window.setInterval(() => {
-    rotator.classList.add('is-changing');
-    window.setTimeout(() => {
-      index = (index + 1) % slides.length;
-      render();
-      requestAnimationFrame(() => rotator.classList.add('is-entering'));
-      window.setTimeout(() => rotator.classList.remove('is-entering'), 460);
-    }, 180);
-  }, 3000);
+  window.setInterval(async () => {
+    if (busy) return;
+    busy = true;
+    index = (index + 1) % slides.length;
+    await setSlide(slides[index]);
+    busy = false;
+  }, 2800);
 }
 
 function initPageTransitions() {
   requestAnimationFrame(() => document.body.classList.add('page-ready'));
-
   window.addEventListener('pageshow', () => {
     document.body.classList.remove('page-leaving');
     document.body.classList.add('page-ready');
@@ -262,7 +302,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initHomeRefresh();
   initHistoryRotator();
   initReveal();
-  initCatalogNavigation();
   initPageTransitions();
 
   window.addEventListener('storage', updateSharedCartCount);
