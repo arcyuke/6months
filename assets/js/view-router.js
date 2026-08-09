@@ -61,4 +61,24 @@
     const cleanUrl = `${window.location.pathname}${cleanSearch()}${window.location.hash}`;
     window.history.replaceState(null, '', cleanUrl);
   }
+
+  if (onAdmin) return;
+
+  const languagePrefix = onMobileVersion ? '../' : '';
+  let sessionLanguage = null;
+  try { sessionLanguage = sessionStorage.getItem('6months-language-session'); }
+  catch { /* chooser will handle storage errors */ }
+
+  if (sessionLanguage !== 'ru' && sessionLanguage !== 'en') {
+    document.documentElement.classList.add('sixm-lang-pending');
+    const preloadStyle = document.createElement('style');
+    preloadStyle.id = 'sixm-language-preload-style';
+    preloadStyle.textContent = `html.sixm-lang-pending,html.sixm-lang-pending body{background:#000!important}html.sixm-lang-pending body{opacity:1!important;overflow:hidden!important}html.sixm-lang-pending body>*{visibility:hidden!important}`;
+    document.head.append(preloadStyle);
+  }
+
+  const languageScript = document.createElement('script');
+  languageScript.src = `${languagePrefix}assets/js/language-ui.js?v=14`;
+  languageScript.async = false;
+  document.head.append(languageScript);
 })();
