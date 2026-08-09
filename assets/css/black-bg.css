@@ -1,0 +1,14 @@
+/* black background cleanup: keep motion/text effects, remove the site-wide grid texture */
+html,body{background:#000!important}
+.home-page>main,
+.home-page .catalog-section,
+.home-page .mobile-placeholder{
+  background-color:#000!important;
+  background-image:none!important;
+}
+.home-page>main::before{
+  content:none!important;
+  display:none!important;
+  background:none!important;
+  animation:none!important;
+}
