@@ -1,7 +1,7 @@
 const MOBILE_BASIC = /\/mobilebasic(?:\/|$)/.test(window.location.pathname);
 const SITE_PREFIX = MOBILE_BASIC ? '../' : '';
 const DATA_URL = `${SITE_PREFIX}assets/data/products.json`;
-const TELEGRAM_USERNAME = 'SKIANORAK';
+const TELEGRAM_URL = 'https://t.me/polGodaa';
 const REDUCED_GALLERY_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let currentProduct = null;
 let currentImage = 0;
@@ -89,20 +89,24 @@ function sizeChartMarkup(product) {
 
 function actionMarkup(product) {
   if (product.madeToOrder) {
-    const text = encodeURIComponent('привет. хочу обсудить индивидуальный заказ от 6 months');
-    return `<a class="primary-action secondary-action" href="https://t.me/${TELEGRAM_USERNAME}?text=${text}" target="_blank" rel="noreferrer">обсудить заказ в telegram</a>`;
+    return `<a class="primary-action secondary-action" href="${TELEGRAM_URL}" target="_blank" rel="noreferrer">обсудить заказ в telegram</a>`;
   }
   const total = availableTotal(product);
   if (total === 0) return '<button class="primary-action" disabled>нет в наличии</button>';
   return '<button class="primary-action" id="add-to-cart" disabled>выберите размер</button>';
 }
 
-function preloadImages(images) {
-  images.slice(1).forEach((src) => {
-    const preload = new Image();
-    preload.decoding = 'async';
-    preload.src = src;
-  });
+function warmImage(src) {
+  if (!src) return;
+  const preload = new Image();
+  preload.decoding = 'async';
+  preload.src = src;
+}
+
+function preloadNeighbors(images, index) {
+  if (images.length < 2) return;
+  warmImage(images[(index + 1) % images.length]);
+  if (images.length > 2) warmImage(images[(index - 1 + images.length) % images.length]);
 }
 
 function renderProduct(product) {
@@ -118,7 +122,7 @@ function renderProduct(product) {
     <div class="product-layout">
       <section class="product-gallery">
         <div class="gallery-main" id="gallery-main">
-          <img id="main-product-image" src="${images[0]}" alt="${product.name}" decoding="async">
+          <img id="main-product-image" src="${images[0]}" alt="${product.name}" decoding="async" fetchpriority="high">
           ${images.length > 1 ? '<button class="gallery-arrow prev" id="prev-image" aria-label="предыдущее фото">‹</button><button class="gallery-arrow next" id="next-image" aria-label="следующее фото">›</button>' : ''}
           <div class="gallery-counter" id="gallery-counter">1 / ${images.length}</div>
         </div>
@@ -146,7 +150,7 @@ function renderProduct(product) {
     </div>`;
 
   currentProduct.resolvedImages = images;
-  preloadImages(images);
+  preloadNeighbors(images, 0);
 
   document.querySelectorAll('.gallery-thumb').forEach((button) => {
     button.addEventListener('click', () => setImage(Number(button.dataset.index)));
@@ -160,7 +164,7 @@ function renderProduct(product) {
   }, { passive: true });
   gallery?.addEventListener('touchend', (event) => {
     const distance = event.changedTouches[0].clientX - touchStartX;
-    if (Math.abs(distance) < 42) return;
+    if (Math.abs(distance) < 36) return;
     setImage(currentImage + (distance < 0 ? 1 : -1));
   }, { passive: true });
 
@@ -196,40 +200,40 @@ async function setImage(index) {
   const nextIndex = (index + images.length) % images.length;
   if (nextIndex === currentImage) return;
 
-  const direction = index > currentImage ? 1 : -1;
+  const rawDelta = nextIndex - currentImage;
+  const direction = Math.abs(rawDelta) > images.length / 2 ? -Math.sign(rawDelta) : Math.sign(rawDelta || 1);
   const token = ++galleryTransitionToken;
   const nextSrc = images[nextIndex];
   const preload = new Image();
   preload.decoding = 'async';
   preload.src = nextSrc;
 
-  try {
-    if (typeof preload.decode === 'function') await preload.decode();
-  } catch { /* browser can still display the image */ }
+  try { if (typeof preload.decode === 'function') await preload.decode(); }
+  catch { /* browser can still display the image */ }
   if (token !== galleryTransitionToken) return;
 
   if (!REDUCED_GALLERY_MOTION && typeof image.animate === 'function') {
     const out = image.animate([
       { opacity: 1, transform: 'translate3d(0,0,0) scale(1)' },
-      { opacity: 0, transform: `translate3d(${-direction * 7}%,0,0) scale(.985)` }
-    ], { duration: 170, easing: 'cubic-bezier(.4,0,.6,1)', fill: 'forwards' });
+      { opacity: .15, transform: `translate3d(${-direction * 5.5}%,0,0) scale(.992)` }
+    ], { duration: 145, easing: 'cubic-bezier(.4,0,.6,1)', fill: 'forwards' });
     await out.finished.catch(() => {});
   }
   if (token !== galleryTransitionToken) return;
 
   currentImage = nextIndex;
   image.src = nextSrc;
-
   document.querySelectorAll('.gallery-thumb').forEach((node, idx) => node.classList.toggle('active', idx === currentImage));
   const counter = document.getElementById('gallery-counter');
   if (counter) counter.textContent = `${currentImage + 1} / ${images.length}`;
+  preloadNeighbors(images, currentImage);
 
   if (!REDUCED_GALLERY_MOTION && typeof image.animate === 'function') {
     image.getAnimations().forEach((animation) => animation.cancel());
     image.animate([
-      { opacity: 0, transform: `translate3d(${direction * 7}%,0,0) scale(1.015)` },
+      { opacity: .15, transform: `translate3d(${direction * 5.5}%,0,0) scale(1.008)` },
       { opacity: 1, transform: 'translate3d(0,0,0) scale(1)' }
-    ], { duration: 280, easing: 'cubic-bezier(.16,.75,.2,1)', fill: 'both' });
+    ], { duration: 245, easing: 'cubic-bezier(.16,.75,.2,1)', fill: 'both' });
   } else {
     image.style.opacity = '1';
     image.style.transform = 'none';
