@@ -2,6 +2,7 @@
 
 :root{
   --sixm-hand:"Marck Script","Neucha","Segoe Print","Bradley Hand","Comic Sans MS",cursive;
+  --sixm-ui:"Helvetica Neue",Arial,sans-serif;
 }
 
 html,body,
@@ -12,18 +13,36 @@ body *:not(svg):not(path){
 body{letter-spacing:.005em!important}
 button,input,textarea,select{font-family:var(--sixm-hand)!important}
 
-.logo,.home-logo,.nav-links a,.header-telegram,
-.page-title,.section-heading h2,.product-title,.detail-title,
-.detail-section h2,.product-description,.detail-description,
+/* Housemaid-like handwritten face is the default site voice. */
+.page-title,.section-heading h2,
+.product-description,.detail-description,
 .product-price,.product-stock,.product-badge,.detail-badge,
-.footer-nav a,.history-top,.history-accent,.history-bottom,
-.hero-rail-word,.sixm-ambient-word,.catalog-glitch-word{
+.catalog-glitch-word{
   font-family:var(--sixm-hand)!important;
 }
 
-.logo,.home-logo,.nav-links a,.header-telegram,.footer-nav a,
-.hero-rail-word,.sixm-ambient-word,.product-stock,.product-badge,.detail-badge{
-  letter-spacing:.025em!important;
+/* These areas stay clean/ordinary so the handwritten face does not overpower the UI. */
+.home-page .home-logo,
+.header-telegram,
+.product-title,.detail-title,
+.history-rotator,.history-rotator *,
+.history-top,.history-accent,.history-bottom,
+.hero-rail-word,.sixm-ambient-word,
+.main-footer,.main-footer *,
+.footer-nav,.footer-nav *{
+  font-family:var(--sixm-ui)!important;
+  font-style:normal!important;
+}
+
+.home-page .home-logo,
+.header-telegram,
+.hero-rail-word,.sixm-ambient-word,
+.main-footer,.main-footer *{
+  letter-spacing:.08em!important;
+}
+
+.product-title,.detail-title{
+  letter-spacing:.01em!important;
 }
 
 /* language gate: site stays hidden until a language is chosen */
