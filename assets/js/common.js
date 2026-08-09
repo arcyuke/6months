@@ -108,6 +108,7 @@ function updateSharedCartCount() {
 
 function mountMobileCartDock() {
   if (!IS_MOBILE_BASIC || /\/mobilebasic\/bag\.html$/.test(window.location.pathname)) return;
+  if (document.querySelector('.mobile-cart-dock')) return;
   const dock = document.createElement('a');
   dock.className = 'mobile-cart-dock';
   dock.href = 'bag.html';
@@ -163,17 +164,6 @@ function scrambleText(node, target, duration = 360) {
   requestAnimationFrame(step);
 }
 
-function railMarkup() {
-  const words = ['6 months', 'distressed', 'reflective', 'hand made', 'baggy', 'one piece', 'cut / wear', 'black', 'street', '2026', 'raw finish'];
-  const block = words.map((word) => `<div class="hero-rail-word">${word}</div>`).join('');
-  return `<aside class="hero-rail" aria-hidden="true"><div class="hero-rail-track">${block}${block}</div></aside>`;
-}
-
-function marqueeMarkup() {
-  const text = 'одежда  ·  вещи  ·  одежда  ·  каталог  ·  шмот  ·  6 months  ·  ';
-  return `<div class="fashion-marquee" aria-hidden="true"><div class="fashion-marquee-track"><span>${text}${text}</span><span>${text}${text}</span></div></div>`;
-}
-
 function initHomeRefresh() {
   const hero = document.querySelector('.hero');
   if (!hero || !document.getElementById('catalog')) return;
@@ -186,8 +176,10 @@ function initHomeRefresh() {
   const content = hero.querySelector('.hero-content');
   if (content) content.innerHTML = '';
 
-  if (!hero.querySelector('.hero-rail')) hero.insertAdjacentHTML('beforeend', railMarkup());
-  if (!document.querySelector('.fashion-marquee')) hero.insertAdjacentHTML('afterend', marqueeMarkup());
+  // Rails and marquee are owned by aura-v10.js only. Keeping them out of shared
+  // code prevents duplicate left rails and missing right rails after cache/reload.
+  hero.querySelectorAll('.hero-rail').forEach((node) => node.remove());
+  document.querySelectorAll('.fashion-marquee').forEach((node) => node.remove());
 
   const heading = document.querySelector('.catalog-section .section-heading h2');
   if (heading) {
@@ -270,7 +262,7 @@ function initHistoryRotator() {
   const start = () => {
     if (timer || REDUCED_MOTION) return;
     render(true);
-    timer = window.setInterval(next, 1750);
+    timer = window.setInterval(next, 1950);
   };
 
   if (document.body.classList.contains('has-user-scrolled')) start();
