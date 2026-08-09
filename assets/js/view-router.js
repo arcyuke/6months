@@ -73,7 +73,7 @@
     document.documentElement.classList.add('sixm-lang-pending');
     const preloadStyle = document.createElement('style');
     preloadStyle.id = 'sixm-language-preload-style';
-    preloadStyle.textContent = `html.sixm-lang-pending,html.sixm-lang-pending body{background:#000!important}html.sixm-lang-pending body{opacity:1!important;overflow:hidden!important}html.sixm-lang-pending body>*{visibility:hidden!important}`;
+    preloadStyle.textContent = `html.sixm-lang-pending,html.sixm-lang-pending body{background:#000!important}html.sixm-lang-pending body{opacity:1!important;overflow:hidden!important}html.sixm-lang-pending body>*:not(.sixm-language-gate){visibility:hidden!important}html.sixm-lang-pending .sixm-language-gate{visibility:visible!important}`;
     document.head.append(preloadStyle);
   }
 
