@@ -6,22 +6,24 @@
   <title>6 months</title>
   <script src="assets/js/view-router.js"></script>
   <link rel="stylesheet" href="assets/css/site.css">
-  <link rel="stylesheet" href="assets/css/archive-smolder.css?v=smolder2">
+  <link rel="stylesheet" href="assets/css/refresh.css?v=refresh1">
   <link rel="icon" href="6months_logo_flow.gif?v=favicon1" type="image/gif">
 </head>
 <body>
   <header class="site-header">
-    <nav class="nav-shell">
+    <nav class="nav-shell" aria-label="главная навигация">
       <a class="logo logo-mark" href="index.html" aria-label="6 months — на главную"><img src="6months_logo_flow.gif?v=logo1" alt=""></a>
       <div class="nav-links">
-        <a href="index.html#catalog">одежда</a>
-        <a href="bag.html">корзина</a>
+        <a class="cart-icon-link" href="bag.html" aria-label="корзина">
+          <svg class="cart-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 4.5h2.2l1.4 9.1h10.1l2.1-6.5H7.1M9.2 18.5a1.25 1.25 0 1 0 0 .01M17.2 18.5a1.25 1.25 0 1 0 0 .01" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="cart-icon-count" id="cart-count">0</span>
+        </a>
       </div>
     </nav>
   </header>
 
   <main class="page-shell" data-reveal>
-    <h1 class="page-title">о бренде</h1>
+    <h1 class="page-title">история</h1>
     <article class="text-panel">
       <p>проект начался в 2025 году с telegram-канала, куда мы с друзьями выкладывали фотографии прогулок и повседневной жизни. позже из этой среды появилась идея собственного бренда одежды.</p>
       <p>название прошло несколько этапов: black shirts, wвы atorie, high street — и в итоге 6 months.</p>
