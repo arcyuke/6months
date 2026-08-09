@@ -59,36 +59,25 @@
     });
   }
 
-  function makeMarquee() {
-    const marquee = document.createElement('div');
-    marquee.className = 'fashion-marquee';
-    marquee.setAttribute('aria-hidden', 'true');
+  function makeCatalogGlitchWord() {
+    const block = document.createElement('div');
+    block.className = 'fashion-marquee fashion-word-glitch';
+    block.setAttribute('aria-hidden', 'true');
 
-    const track = document.createElement('div');
-    track.className = 'fashion-marquee-track';
-    const phrase = 'одежда  ·  вещи  ·  одежда  ·  каталог  ·  шмот  ·  6 months  ·  ';
-    const longPhrase = phrase.repeat(8);
-
-    const makeSet = () => {
-      const set = document.createElement('div');
-      set.className = 'fashion-marquee-set';
-      const span = document.createElement('span');
-      span.textContent = longPhrase;
-      set.append(span);
-      return set;
-    };
-
-    track.append(makeSet(), makeSet());
-    marquee.append(track);
-    return marquee;
+    const word = document.createElement('span');
+    word.className = 'catalog-glitch-word';
+    word.dataset.text = 'одежда';
+    word.textContent = 'одежда';
+    block.append(word);
+    return block;
   }
 
   function rebuildMarquee() {
     document.querySelectorAll('.fashion-marquee').forEach((node) => node.remove());
-    const marquee = makeMarquee();
+    const block = makeCatalogGlitchWord();
     const grid = catalog.querySelector('.products-grid');
-    if (grid) grid.insertAdjacentElement('beforebegin', marquee);
-    else catalog.append(marquee);
+    if (grid) grid.insertAdjacentElement('beforebegin', block);
+    else catalog.append(block);
   }
 
   function mountAmbientText() {
