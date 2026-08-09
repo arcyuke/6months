@@ -2,7 +2,7 @@
   {
     "id": "archive-reflective-jeans",
     "name": "reflective jeans",
-    "badge": "архив",
+    "badge": "first drop",
     "price": 3500,
     "description": "широкие чёрные джинсы со светоотражающей тканью под дистресс-прорезями",
     "characteristics": [
@@ -54,7 +54,7 @@
   {
     "id": "archive-distressed-tee",
     "name": "distressed tee",
-    "badge": "архив",
+    "badge": "first drop",
     "price": 1500,
     "description": "чёрная оверсайз-футболка с ручной дистресс-обработкой и прорезями",
     "characteristics": [
@@ -72,22 +72,10 @@
       "08_model_back_view.png"
     ],
     "sizes": [
-      {
-        "label": "s",
-        "stock": 3
-      },
-      {
-        "label": "m",
-        "stock": 2
-      },
-      {
-        "label": "l",
-        "stock": 1
-      },
-      {
-        "label": "xl",
-        "stock": 2
-      }
+      { "label": "s", "stock": 3 },
+      { "label": "m", "stock": 2 },
+      { "label": "l", "stock": 1 },
+      { "label": "xl", "stock": 2 }
     ],
     "sizeChart": {
       "unit": "см",
