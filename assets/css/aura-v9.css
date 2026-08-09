@@ -1,0 +1,156 @@
+:root{
+  --sixm-grid-bg:
+    repeating-linear-gradient(0deg,rgba(255,255,255,.028) 0 1px,transparent 1px 4px),
+    repeating-linear-gradient(90deg,transparent 0 46px,rgba(255,255,255,.013) 46px 47px),
+    radial-gradient(circle at 18% 24%,rgba(255,255,255,.055),transparent 16%),
+    radial-gradient(circle at 82% 66%,rgba(255,255,255,.035),transparent 20%),
+    #030303;
+}
+
+/* ===== v9: clean hero, full-width desktop ===== */
+html,body{width:100%;max-width:none!important}
+.home-page{width:100%;max-width:none!important}
+.home-page>main{
+  width:100%!important;
+  max-width:none!important;
+  overflow-x:clip!important;
+}
+
+/* Header remains visually separate from the GIF. */
+.home-page .site-header{
+  width:100%!important;
+  border-bottom:1px solid rgba(255,255,255,.18)!important;
+  box-shadow:0 1px 0 rgba(104,70,173,.08)!important;
+}
+.home-page .nav-shell{
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding-left:clamp(18px,2.8vw,48px)!important;
+  padding-right:clamp(18px,2.8vw,48px)!important;
+}
+
+/* Remove the buggy v8 mask layer that produced white blocks in Chromium/Yandex. */
+.home-page .hero-refresh::after{content:none!important;display:none!important}
+
+/* Hero truly spans edge-to-edge. */
+.home-page .hero-refresh{
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  overflow:hidden!important;
+  background:#000!important;
+}
+.home-page .hero-refresh .hero-media{
+  width:100%!important;
+  max-width:none!important;
+  overflow:hidden!important;
+}
+.home-page .hero-refresh .hero-media img{
+  width:100%!important;
+  max-width:none!important;
+}
+
+/* Safe scanline layer on GIF only. No composite masks, no white browser artifacts. */
+.home-page .hero-refresh .hero-media::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:3;
+  pointer-events:none;
+  opacity:.30;
+  background:
+    repeating-linear-gradient(0deg,rgba(255,255,255,.038) 0 1px,transparent 1px 4px),
+    repeating-linear-gradient(90deg,transparent 0 48px,rgba(255,255,255,.014) 48px 49px);
+  -webkit-mask-image:radial-gradient(ellipse 30% 28% at 50% 50%,transparent 0 67%,rgba(0,0,0,.25) 76%,#000 100%);
+  mask-image:radial-gradient(ellipse 30% 28% at 50% 50%,transparent 0 67%,rgba(0,0,0,.25) 76%,#000 100%);
+}
+
+/* Side rails: plain text color instead of clipped gradients (stable in Yandex). */
+.home-page .hero-rail{
+  width:clamp(210px,22vw,360px)!important;
+  background:transparent!important;
+}
+.home-page .hero-rail-left{left:clamp(18px,2.4vw,40px)!important}
+.home-page .hero-rail-right{right:clamp(18px,2.4vw,40px)!important}
+.home-page .hero-rail-word{
+  color:#a9a9ad!important;
+  background:none!important;
+  -webkit-background-clip:border-box!important;
+  background-clip:border-box!important;
+  font-size:clamp(12px,.9vw,15px)!important;
+  font-weight:390!important;
+  letter-spacing:.18em!important;
+  opacity:.82!important;
+  text-shadow:0 0 7px rgba(255,255,255,.11)!important;
+  filter:none!important;
+  animation:textSizzle 1.65s steps(2,end) infinite!important;
+}
+.home-page .hero-rail-left .hero-rail-word:nth-child(even),
+.home-page .hero-rail-right .hero-rail-word:nth-child(odd){color:#d0d0d3!important;opacity:.92!important}
+
+/* Desktop should no longer look horizontally boxed-in. */
+@media(min-width:761px){
+  .home-page .hero-refresh{
+    height:clamp(620px,76vh,900px)!important;
+    min-height:620px!important;
+  }
+  .home-page .hero-refresh .hero-media img{
+    height:100%!important;
+    object-fit:contain!important;
+    object-position:center center!important;
+  }
+
+  .home-page .mobile-placeholder,
+  .home-page .catalog-section{
+    width:100%!important;
+    max-width:none!important;
+    margin-left:0!important;
+    margin-right:0!important;
+  }
+
+  .home-page .catalog-section{
+    padding-left:clamp(22px,3vw,52px)!important;
+    padding-right:clamp(22px,3vw,52px)!important;
+  }
+
+  .home-page .products-grid{
+    width:100%!important;
+    max-width:none!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:clamp(12px,1.4vw,24px)!important;
+  }
+
+  .home-page .product-image{
+    height:clamp(320px,32vw,560px)!important;
+  }
+
+  .home-page .catalog-section>.fashion-marquee{
+    width:100%!important;
+    max-width:none!important;
+    left:auto!important;
+    transform:none!important;
+  }
+}
+
+/* Keep the global glitch/grid background continuous. */
+.home-page>main,
+.home-page .mobile-placeholder,
+.home-page .catalog-section{background-color:#030303!important}
+.home-page .mobile-placeholder,
+.home-page .catalog-section{background-image:var(--sixm-grid-bg)!important}
+
+/* Mobile keeps the existing composition, only make the hero layer stable too. */
+@media(max-width:760px){
+  .home-page .hero-refresh .hero-media::after{
+    opacity:.25;
+    -webkit-mask-image:radial-gradient(ellipse 43% 26% at 50% 48%,transparent 0 68%,rgba(0,0,0,.2) 78%,#000 100%);
+    mask-image:radial-gradient(ellipse 43% 26% at 50% 48%,transparent 0 68%,rgba(0,0,0,.2) 78%,#000 100%);
+  }
+  body.mobile-basic.home-page .hero-rail{width:clamp(92px,25vw,124px)!important}
+  body.mobile-basic.home-page .hero-rail-word{
+    font-size:clamp(7.6px,2.15vw,9.4px)!important;
+    letter-spacing:.11em!important;
+    color:#a6a6aa!important;
+  }
+}
