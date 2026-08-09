@@ -8,11 +8,15 @@ const TIKTOK_URL = 'https://www.tiktok.com/@6ixmonth.s';
 (function bootstrapRefreshStyles() {
   document.querySelectorAll('link[href*="archive-smolder.css"]').forEach((link) => link.remove());
   const existing = [...document.querySelectorAll('link[rel="stylesheet"]')].find((link) => link.href.includes('/assets/css/refresh.css'));
-  if (existing) { existing.dataset.sixmRefresh = '1'; return; }
+  if (existing) {
+    existing.href = `${SITE_ROOT}assets/css/refresh.css?v=refresh2`;
+    existing.dataset.sixmRefresh = '2';
+    return;
+  }
   const link = document.createElement('link');
   link.rel = 'stylesheet';
-  link.href = `${SITE_ROOT}assets/css/refresh.css?v=refresh1`;
-  link.dataset.sixmRefresh = '1';
+  link.href = `${SITE_ROOT}assets/css/refresh.css?v=refresh2`;
+  link.dataset.sixmRefresh = '2';
   document.head.append(link);
 })();
 
@@ -61,17 +65,13 @@ function footerMarkup() {
   return `
     <footer class="main-footer">
       <div class="footer-content footer-refresh">
-        <div class="footer-primary">
-          <span class="footer-dot" aria-hidden="true"></span>
-          <span>6 months / independent</span>
-        </div>
         <nav class="footer-nav" aria-label="нижняя навигация">
           <a href="${TELEGRAM_CHANNEL}" target="_blank" rel="noreferrer">telegram</a>
           <a href="${TIKTOK_URL}" target="_blank" rel="noreferrer">tik tok</a>
           <a href="about.html">история</a>
           <a href="privacy.html">конфиденциальность</a>
-          <a class="admin-entry" href="${SITE_ROOT}admin.html">глав.net</a>
           <a href="${switchHref}" data-view-switch="${switchMode}">${switchLabel}</a>
+          <a class="admin-entry" href="${SITE_ROOT}admin.html" aria-label="редактор">глав.net</a>
         </nav>
       </div>
       <div class="footer-bottom"><span data-current-year></span></div>
@@ -79,12 +79,8 @@ function footerMarkup() {
 }
 
 function mountFooter() {
-  document.querySelectorAll('[data-site-footer]').forEach((node) => {
-    node.innerHTML = footerMarkup();
-  });
-  document.querySelectorAll('[data-current-year]').forEach((node) => {
-    node.textContent = new Date().getFullYear();
-  });
+  document.querySelectorAll('[data-site-footer]').forEach((node) => { node.innerHTML = footerMarkup(); });
+  document.querySelectorAll('[data-current-year]').forEach((node) => { node.textContent = new Date().getFullYear(); });
   document.querySelectorAll('[data-view-switch]').forEach((link) => {
     link.addEventListener('click', () => {
       try { localStorage.setItem(VERSION_STORAGE_KEY, link.dataset.viewSwitch); }
@@ -138,7 +134,7 @@ function initReveal() {
       entry.target.classList.add('is-visible');
       observer.unobserve(entry.target);
     });
-  }, { threshold: 0.1, rootMargin: '0px 0px -24px' });
+  }, { threshold: 0.08, rootMargin: '0px 0px -20px' });
   nodes.forEach((node) => observer.observe(node));
 }
 
@@ -175,7 +171,7 @@ function initHomeRefresh() {
       <div class="hero-note hero-note-left" aria-label="описание бренда">
         <span class="hero-note-label">archive / 01</span>
         <strong>ручная<br>работа</strong>
-        <small>единичные вещи<br>и ограниченные модели</small>
+        <small>единичные вещи<br>ограниченные модели</small>
       </div>
       <div class="hero-note hero-note-right" aria-label="6 months">
         <span class="hero-note-label accent-violet">6 months</span>
@@ -194,11 +190,11 @@ function initHistoryRotator() {
   if (!placeholder) return;
 
   const slides = [
-    { top: '6 MONTHS', accent: '— «ПОЛ ГОДА»', bottom: 'так переводится название', type: 'type-condensed', tone: 'tone-violet' },
-    { top: '2025', accent: 'СНАЧАЛА БЫЛ КАНАЛ', bottom: 'фотографии прогулок и повседневной жизни', type: 'type-serif', tone: 'tone-red' },
-    { top: 'ПОТОМ', accent: 'ПОЯВИЛАСЬ ОДЕЖДА', bottom: 'идея выросла из той же среды', type: 'type-sans', tone: 'tone-violet' },
-    { top: 'ПЕРВЫЕ', accent: 'ДВЕ МОДЕЛИ', bottom: 'distressed tee / reflective jeans', type: 'type-mono', tone: 'tone-red' },
-    { top: 'СЕЙЧАС', accent: '6 MONTHS', bottom: 'архив / единичные вещи / ручная работа', type: 'type-condensed', tone: 'tone-violet' }
+    { top: '6 MONTHS', accent: 'ПОЛ ГОДА', bottom: 'так переводится название', type: 'type-condensed', tone: 'tone-violet' },
+    { top: 'ДО ОДЕЖДЫ', accent: 'БЫЛИ ПРОГУЛКИ', bottom: 'канал, фотографии и обычная жизнь', type: 'type-sans', tone: 'tone-red' },
+    { top: 'ПОТОМ', accent: 'ДВЕ ВЕЩИ', bottom: 'distressed tee / reflective jeans', type: 'type-serif', tone: 'tone-violet' },
+    { top: 'ПЕРВАЯ ПАРТИЯ', accent: 'РУЧНАЯ РАБОТА', bottom: 'вырезы, обработка и детали вручную', type: 'type-mono', tone: 'tone-red' },
+    { top: 'СЕЙЧАС', accent: 'АРХИВ 2026', bottom: '6 months продолжает историю', type: 'type-condensed', tone: 'tone-violet' }
   ];
 
   placeholder.innerHTML = `<div class="history-rotator" aria-live="polite"></div>`;
@@ -216,15 +212,16 @@ function initHistoryRotator() {
 
   render();
   if (REDUCED_MOTION) return;
+
   window.setInterval(() => {
     rotator.classList.add('is-changing');
     window.setTimeout(() => {
       index = (index + 1) % slides.length;
       render();
       requestAnimationFrame(() => rotator.classList.add('is-entering'));
-      window.setTimeout(() => rotator.classList.remove('is-entering'), 520);
-    }, 210);
-  }, 2700);
+      window.setTimeout(() => rotator.classList.remove('is-entering'), 460);
+    }, 180);
+  }, 3000);
 }
 
 function initPageTransitions() {
@@ -252,7 +249,7 @@ function initPageTransitions() {
 
     event.preventDefault();
     document.body.classList.add('page-leaving');
-    window.setTimeout(() => { window.location.href = url.href; }, 230);
+    window.setTimeout(() => { window.location.href = url.href; }, 175);
   });
 }
 
