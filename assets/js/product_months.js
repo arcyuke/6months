@@ -2,10 +2,12 @@ const MOBILE_BASIC = /\/mobilebasic(?:\/|$)/.test(window.location.pathname);
 const SITE_PREFIX = MOBILE_BASIC ? '../' : '';
 const DATA_URL = `${SITE_PREFIX}assets/data/products.json`;
 const TELEGRAM_USERNAME = 'SKIANORAK';
+const REDUCED_GALLERY_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let currentProduct = null;
 let currentImage = 0;
 let selectedSize = '';
 let touchStartX = 0;
+let galleryTransitionToken = 0;
 
 const money = (value) => value === null ? '' : `${new Intl.NumberFormat('ru-RU').format(value)} ₽`;
 
@@ -95,6 +97,14 @@ function actionMarkup(product) {
   return '<button class="primary-action" id="add-to-cart" disabled>выберите размер</button>';
 }
 
+function preloadImages(images) {
+  images.slice(1).forEach((src) => {
+    const preload = new Image();
+    preload.decoding = 'async';
+    preload.src = src;
+  });
+}
+
 function renderProduct(product) {
   currentProduct = product;
   currentImage = 0;
@@ -103,6 +113,7 @@ function renderProduct(product) {
   page.classList.remove('product-ready');
   const price = product.priceText || money(product.price);
   const images = (product.images || []).map(assetUrl);
+
   page.innerHTML = `
     <div class="product-layout">
       <section class="product-gallery">
@@ -135,6 +146,7 @@ function renderProduct(product) {
     </div>`;
 
   currentProduct.resolvedImages = images;
+  preloadImages(images);
 
   document.querySelectorAll('.gallery-thumb').forEach((button) => {
     button.addEventListener('click', () => setImage(Number(button.dataset.index)));
@@ -143,10 +155,12 @@ function renderProduct(product) {
   document.getElementById('next-image')?.addEventListener('click', () => setImage(currentImage + 1));
 
   const gallery = document.getElementById('gallery-main');
-  gallery?.addEventListener('touchstart', (event) => { touchStartX = event.changedTouches[0].clientX; }, { passive: true });
+  gallery?.addEventListener('touchstart', (event) => {
+    touchStartX = event.changedTouches[0].clientX;
+  }, { passive: true });
   gallery?.addEventListener('touchend', (event) => {
     const distance = event.changedTouches[0].clientX - touchStartX;
-    if (Math.abs(distance) < 45) return;
+    if (Math.abs(distance) < 42) return;
     setImage(currentImage + (distance < 0 ? 1 : -1));
   }, { passive: true });
 
@@ -174,19 +188,52 @@ function selectSize(button) {
   }
 }
 
-function setImage(index) {
+async function setImage(index) {
   const images = currentProduct?.resolvedImages || [];
-  if (!images.length) return;
-  currentImage = (index + images.length) % images.length;
   const image = document.getElementById('main-product-image');
-  image?.classList.add('is-changing');
-  window.setTimeout(() => {
-    if (image) image.src = images[currentImage];
-    image?.classList.remove('is-changing');
-  }, 90);
+  if (!images.length || !image) return;
+
+  const nextIndex = (index + images.length) % images.length;
+  if (nextIndex === currentImage) return;
+
+  const direction = index > currentImage ? 1 : -1;
+  const token = ++galleryTransitionToken;
+  const nextSrc = images[nextIndex];
+  const preload = new Image();
+  preload.decoding = 'async';
+  preload.src = nextSrc;
+
+  try {
+    if (typeof preload.decode === 'function') await preload.decode();
+  } catch { /* browser can still display the image */ }
+  if (token !== galleryTransitionToken) return;
+
+  if (!REDUCED_GALLERY_MOTION && typeof image.animate === 'function') {
+    const out = image.animate([
+      { opacity: 1, transform: 'translate3d(0,0,0) scale(1)' },
+      { opacity: 0, transform: `translate3d(${-direction * 7}%,0,0) scale(.985)` }
+    ], { duration: 170, easing: 'cubic-bezier(.4,0,.6,1)', fill: 'forwards' });
+    await out.finished.catch(() => {});
+  }
+  if (token !== galleryTransitionToken) return;
+
+  currentImage = nextIndex;
+  image.src = nextSrc;
+
   document.querySelectorAll('.gallery-thumb').forEach((node, idx) => node.classList.toggle('active', idx === currentImage));
   const counter = document.getElementById('gallery-counter');
   if (counter) counter.textContent = `${currentImage + 1} / ${images.length}`;
+
+  if (!REDUCED_GALLERY_MOTION && typeof image.animate === 'function') {
+    image.getAnimations().forEach((animation) => animation.cancel());
+    image.animate([
+      { opacity: 0, transform: `translate3d(${direction * 7}%,0,0) scale(1.015)` },
+      { opacity: 1, transform: 'translate3d(0,0,0) scale(1)' }
+    ], { duration: 280, easing: 'cubic-bezier(.16,.75,.2,1)', fill: 'both' });
+  } else {
+    image.style.opacity = '1';
+    image.style.transform = 'none';
+  }
 }
 
 function addToCart() {
