@@ -1,0 +1,73 @@
+/* final desktop hero polish */
+
+/* Old two-panel overlay is disabled. aura-v10.js now mounts four safe panels. */
+.hero-grid-side{display:none!important}
+.hero-grid-panel{
+  position:absolute;
+  z-index:4;
+  pointer-events:none;
+  opacity:.34;
+  background:
+    repeating-linear-gradient(0deg,rgba(255,255,255,.038) 0 1px,transparent 1px 4px),
+    repeating-linear-gradient(90deg,transparent 0 44px,rgba(255,255,255,.014) 44px 45px),
+    radial-gradient(circle at 24% 30%,rgba(255,255,255,.035),transparent 20%),
+    radial-gradient(circle at 76% 66%,rgba(255,255,255,.022),transparent 24%);
+}
+
+.home-page .hero-refresh{
+  --eye-safe-width:clamp(700px,46vw,920px);
+  --eye-safe-height:clamp(260px,31vh,350px);
+}
+.hero-grid-left{
+  left:0;top:0;bottom:0;
+  width:calc((100% - var(--eye-safe-width))/2);
+}
+.hero-grid-right{
+  right:0;top:0;bottom:0;
+  width:calc((100% - var(--eye-safe-width))/2);
+}
+.hero-grid-top{
+  top:0;
+  left:calc((100% - var(--eye-safe-width))/2);
+  width:var(--eye-safe-width);
+  height:calc((100% - var(--eye-safe-height))/2);
+}
+.hero-grid-bottom{
+  bottom:0;
+  left:calc((100% - var(--eye-safe-width))/2);
+  width:var(--eye-safe-width);
+  height:calc((100% - var(--eye-safe-height))/2);
+}
+
+@media(min-width:761px){
+  /* Make the eye/logo materially larger only on desktop. */
+  .home-page .hero-refresh .hero-media img{
+    transform:scale(1.32)!important;
+    transform-origin:50% 50%!important;
+  }
+
+  /* Rails sit much closer to the outer edges and stop occupying half the hero. */
+  .home-page .hero-rail-left{
+    left:clamp(22px,2.2vw,42px)!important;
+    right:auto!important;
+    width:clamp(145px,9vw,185px)!important;
+  }
+  .home-page .hero-rail-right{
+    right:clamp(22px,2.2vw,42px)!important;
+    left:auto!important;
+    width:clamp(145px,9vw,185px)!important;
+  }
+  .home-page .hero-rail-word{
+    max-width:100%!important;
+    font-size:clamp(11px,.78vw,13px)!important;
+    letter-spacing:.15em!important;
+  }
+}
+
+@media(max-width:760px){
+  .home-page .hero-refresh{
+    --eye-safe-width:66vw;
+    --eye-safe-height:150px;
+  }
+  .hero-grid-panel{opacity:.25}
+}
