@@ -1,0 +1,215 @@
+:root{
+  --sixm-grid-bg:
+    repeating-linear-gradient(0deg,rgba(255,255,255,.034) 0 1px,transparent 1px 4px),
+    repeating-linear-gradient(90deg,transparent 0 46px,rgba(255,255,255,.015) 46px 47px),
+    radial-gradient(circle at 18% 24%,rgba(255,255,255,.07),transparent 15%),
+    radial-gradient(circle at 82% 66%,rgba(255,255,255,.04),transparent 20%),
+    linear-gradient(116deg,transparent 0 35%,rgba(104,70,173,.035) 35.4% 35.9%,transparent 36.4% 100%),
+    #030303;
+}
+
+/* header: separate it clearly from the visual stage */
+.home-page .site-header{
+  background:#030303!important;
+  border-bottom:1px solid rgba(255,255,255,.18)!important;
+  box-shadow:0 1px 0 rgba(104,70,173,.08)!important;
+}
+.home-page .nav-shell{
+  max-width:none!important;
+  min-height:50px!important;
+  padding:10px clamp(16px,3vw,42px)!important;
+}
+.home-page .home-logo{
+  font-size:13px!important;
+  letter-spacing:.24em!important;
+  color:#f1f1f1!important;
+}
+.home-page .header-telegram{
+  color:#c9c9c9!important;
+  letter-spacing:.16em!important;
+}
+
+/* whole home background = the same glitch/grid language as the placeholder */
+.home-page>main{
+  position:relative!important;
+  isolation:isolate;
+  overflow:hidden;
+  background:var(--sixm-grid-bg)!important;
+}
+.home-page>main::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  opacity:.52;
+  background:
+    repeating-linear-gradient(0deg,rgba(255,255,255,.024) 0 1px,transparent 1px 4px),
+    repeating-linear-gradient(90deg,transparent 0 38px,rgba(255,255,255,.012) 38px 39px);
+  animation:sixmFieldDrift 13s steps(2,end) infinite;
+}
+.home-page>main>*{position:relative;z-index:2}
+@keyframes sixmFieldDrift{0%,100%{transform:translate(0,0)}50%{transform:translate(2px,-1px)}}
+
+/* slow flying text behind content */
+.sixm-ambient{
+  position:absolute!important;
+  inset:0!important;
+  z-index:1!important;
+  pointer-events:none!important;
+  overflow:hidden!important;
+}
+.sixm-ambient-word{
+  position:absolute;
+  color:rgba(225,225,225,.105);
+  font-family:var(--font-ui)!important;
+  font-size:clamp(8px,.75vw,12px);
+  font-weight:300!important;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  white-space:nowrap;
+  text-shadow:0 0 8px rgba(255,255,255,.04);
+  animation:sixmAmbientFloat var(--dur,34s) linear infinite;
+  animation-delay:var(--delay,0s);
+  will-change:transform;
+}
+@keyframes sixmAmbientFloat{
+  0%{transform:translate3d(0,14px,0);opacity:.04}
+  12%{opacity:.16}
+  50%{transform:translate3d(var(--dx,24px),-18px,0);opacity:.11}
+  88%{opacity:.15}
+  100%{transform:translate3d(0,-52px,0);opacity:.04}
+}
+
+/* desktop hero: do not crop the GIF vertically */
+@media(min-width:761px){
+  .home-page .hero-refresh{
+    height:clamp(620px,76vh,860px)!important;
+    min-height:620px!important;
+    max-height:none!important;
+    background:#000!important;
+  }
+  .home-page .hero-refresh .hero-media,
+  .home-page .hero-refresh .hero-media img{height:100%!important}
+  .home-page .hero-refresh .hero-media img{
+    object-fit:contain!important;
+    object-position:center center!important;
+    width:100%!important;
+  }
+}
+
+/* add the grid to the GIF area but leave a clean hole around the eye */
+.home-page .hero-refresh::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:5;
+  pointer-events:none;
+  opacity:.34;
+  background:
+    repeating-linear-gradient(0deg,rgba(255,255,255,.045) 0 1px,transparent 1px 4px),
+    repeating-linear-gradient(90deg,transparent 0 46px,rgba(255,255,255,.018) 46px 47px);
+  -webkit-mask-image:radial-gradient(ellipse 38% 42% at 50% 48%,transparent 0 63%,#000 77% 100%);
+  mask-image:radial-gradient(ellipse 38% 42% at 50% 48%,transparent 0 63%,#000 77% 100%);
+}
+.home-page .hero-refresh .hero-media{z-index:1!important}
+.home-page .hero-refresh .hero-overlay{z-index:2!important}
+.home-page .hero-rail{z-index:7!important}
+
+/* side rails: more visible and broader, still leaving the centre clean */
+.home-page .hero-rail{
+  width:clamp(210px,22vw,350px)!important;
+}
+.home-page .hero-rail-left{left:clamp(14px,2vw,32px)!important}
+.home-page .hero-rail-right{right:clamp(14px,2vw,32px)!important}
+.home-page .hero-rail-word{
+  font-size:clamp(12px,.95vw,15px)!important;
+  font-weight:390!important;
+  letter-spacing:.18em!important;
+  background:linear-gradient(90deg,#777,#fff 30%,#999 55%,#fff 76%,#707070)!important;
+  background-size:220% 100%!important;
+  filter:drop-shadow(0 0 6px rgba(255,255,255,.12))!important;
+}
+
+/* story placeholder blends into the same global background */
+.home-page .mobile-placeholder{
+  background:transparent!important;
+}
+.home-page:not(.mobile-basic) .mobile-placeholder{height:360px!important}
+
+/* marquee: horizontally stretched glyphs, intentionally slower */
+.home-page .fashion-marquee-track{
+  animation-duration:28s!important;
+}
+.home-page .fashion-marquee-set span{
+  display:inline-block!important;
+  transform:scaleX(1.22);
+  transform-origin:left center;
+  letter-spacing:.005em!important;
+}
+
+/* desktop marquee sits in a wide low band immediately above cards */
+.home-page:not(.mobile-basic) .catalog-section>.fashion-marquee{
+  height:106px!important;
+  margin:4px 0 10px!important;
+  display:flex!important;
+  align-items:center!important;
+}
+.home-page:not(.mobile-basic) .fashion-marquee-set span{
+  font-size:clamp(38px,4vw,64px)!important;
+  line-height:106px!important;
+}
+
+/* mobile: marquee hugs the cards and moves slowly */
+body.mobile-basic.home-page .catalog-section{
+  padding-top:26px!important;
+}
+body.mobile-basic.home-page .catalog-section>.fashion-marquee{
+  height:62px!important;
+  margin:0 0 3px!important;
+  display:flex!important;
+  align-items:center!important;
+  overflow:hidden!important;
+  background:transparent!important;
+}
+body.mobile-basic.home-page .fashion-marquee-track{
+  animation-duration:23s!important;
+}
+body.mobile-basic.home-page .fashion-marquee-set span{
+  font-size:29px!important;
+  line-height:62px!important;
+  transform:scaleX(1.18);
+  padding-right:24px!important;
+}
+body.mobile-basic.home-page .section-heading{margin-bottom:4px!important}
+body.mobile-basic.home-page .products-grid{margin-top:0!important}
+
+/* mobile side text wider/brighter, but keeps a central safe zone */
+body.mobile-basic.home-page .hero-rail{
+  width:clamp(92px,25vw,122px)!important;
+}
+body.mobile-basic.home-page .hero-rail-left{left:4px!important}
+body.mobile-basic.home-page .hero-rail-right{right:4px!important}
+body.mobile-basic.home-page .hero-rail-word{
+  font-size:clamp(7.6px,2.15vw,9.4px)!important;
+  letter-spacing:.11em!important;
+  font-weight:420!important;
+}
+
+/* keep custom cursor from v7 */
+@media(hover:hover) and (pointer:fine){
+  html.sixm-custom-cursor,html.sixm-custom-cursor body,html.sixm-custom-cursor a,html.sixm-custom-cursor button,html.sixm-custom-cursor [role="button"]{cursor:none!important}
+  .sixm-cursor-dot,.sixm-cursor-cross{position:fixed;left:0;top:0;pointer-events:none;z-index:99999;opacity:0;will-change:transform,opacity}
+  .sixm-cursor-dot{width:4px;height:4px;border-radius:50%;background:#f3f3f3;box-shadow:0 0 7px rgba(255,255,255,.35);transform:translate(-50%,-50%)}
+  .sixm-cursor-cross{width:26px;height:26px;transform:translate(-50%,-50%) scale(.72);transition:opacity .1s ease,transform .12s ease}
+  .sixm-cursor-cross::before,.sixm-cursor-cross::after{content:"";position:absolute;left:50%;top:50%;background:rgba(240,240,240,.72)}
+  .sixm-cursor-cross::before{width:26px;height:1px;transform:translate(-50%,-50%)}
+  .sixm-cursor-cross::after{width:1px;height:26px;transform:translate(-50%,-50%)}
+  .sixm-cursor-cross span{position:absolute;inset:5px;border:1px solid rgba(255,255,255,.22);border-radius:50%}
+  html.sixm-custom-cursor .sixm-cursor-dot.is-visible{opacity:1}
+  html.sixm-custom-cursor .sixm-cursor-cross.is-visible.is-target{opacity:1;transform:translate(-50%,-50%) scale(1)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .sixm-ambient-word,.home-page>main::before{animation:none!important}
+}
