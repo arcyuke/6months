@@ -9,48 +9,60 @@
   <link rel="stylesheet" href="../assets/css/site.css">
   <link rel="stylesheet" href="../assets/css/mobilebasic.css">
   <link rel="stylesheet" href="../assets/css/mobile-spacing-footer.css">
-  <link rel="stylesheet" href="../assets/css/archive-smolder.css?v=smolder3">
+  <link rel="stylesheet" href="../assets/css/refresh.css?v=refresh1">
   <link rel="icon" href="../6months_logo_flow.gif?v=favicon1" type="image/gif">
 </head>
-<body class="mobile-basic home-burn-page brand-intro-pending">
+<body class="mobile-basic home-page home-refresh">
   <header class="site-header">
     <nav class="nav-shell" aria-label="главная навигация">
       <a class="logo home-logo" href="index.html" aria-label="6 months — на главную">6 months</a>
       <div class="nav-links">
-        <a href="#catalog">одежда</a>
-        <a href="bag.html">корзина (<span id="cart-count">0</span>)</a>
+        <a class="cart-icon-link" href="bag.html" aria-label="корзина">
+          <svg class="cart-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 4.5h2.2l1.4 9.1h10.1l2.1-6.5H7.1M9.2 18.5a1.25 1.25 0 1 0 0 .01M17.2 18.5a1.25 1.25 0 1 0 0 .01" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="cart-icon-count" id="cart-count">0</span>
+        </a>
       </div>
     </nav>
   </header>
 
   <main>
-    <section class="hero">
+    <section class="hero hero-refresh">
       <div class="hero-media hero-logo-media" aria-hidden="true">
         <img src="../6months_logo_flow.gif?v=logo1" alt="">
       </div>
       <div class="hero-overlay"></div>
+
+      <div class="hero-note hero-note-left" aria-label="описание бренда">
+        <span class="hero-note-label">archive / 01</span>
+        <strong>ручная<br>работа</strong>
+        <small>единичные вещи<br>и ограниченные модели</small>
+      </div>
+
+      <div class="hero-note hero-note-right" aria-label="6 months">
+        <span class="hero-note-label accent-violet">6 months</span>
+        <strong>архив<br>2026</strong>
+        <small>distressed / reflective<br>made by hand</small>
+      </div>
+
       <div class="hero-content">
-        <p class="hero-kicker">одежда ручной работы</p>
-        <h1 class="hero-brand-flight">6 months</h1>
-        <p class="hero-copy">архивные модели, единичные изделия и индивидуальные заказы</p>
-        <div class="hero-actions">
+        <div class="hero-actions hero-actions-refresh">
           <a class="button button-ghost" href="#catalog">каталог</a>
-          <a class="button button-ghost" href="https://t.me/highallowww" target="_blank" rel="noreferrer">telegram</a>
+          <a class="button button-ghost" href="https://t.me/polGodaa" target="_blank" rel="noreferrer">telegram</a>
         </div>
       </div>
-      <div class="hero-scroll-cue" aria-hidden="true"><span></span></div>
     </section>
 
-    <section class="mobile-placeholder" aria-hidden="true"></section>
+    <section class="mobile-placeholder">
+      <div class="history-rotator type-condensed tone-violet" aria-live="polite">
+        <span class="history-top">6 MONTHS</span>
+        <strong class="history-accent">— «ПОЛ ГОДА»</strong>
+        <span class="history-bottom">так переводится название</span>
+      </div>
+    </section>
 
     <section class="catalog-section" id="catalog" data-reveal>
-      <div class="section-heading"><h2>одежда</h2></div>
+      <div class="section-heading"><h2>каталог</h2></div>
       <div class="products-grid" id="products-grid" aria-live="polite"></div>
-    </section>
-
-    <section class="process-section" data-reveal>
-      <div><h2>новые модели — по одной</h2></div>
-      <p>единичные изделия, ручные переделки и индивидуальные заказы. процесс и новые позиции публикуются в telegram.</p>
     </section>
   </main>
 
@@ -58,6 +70,5 @@
   <div id="custom-alert" class="custom-alert" role="status" aria-live="polite"></div>
   <script src="../assets/js/common.js"></script>
   <script src="../assets/js/site.js"></script>
-  <script src="../assets/js/home-burn.js?v=burn3"></script>
 </body>
 </html>
