@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://arcyuke.github.io/6months/sitemap.xml
+Sitemap: https://arcyuke.github.io/6months/sitemap-pages.xml
