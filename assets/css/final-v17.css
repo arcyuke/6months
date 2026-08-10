@@ -1,4 +1,4 @@
-/* v17: final positioning + typography overrides */
+/* v18: final positioning + typography overrides */
 
 /* The catalog word is informational UI, so it stays in the clean site typeface. */
 .home-page .catalog-section>.fashion-word-glitch .catalog-glitch-word{
@@ -8,17 +8,33 @@
   letter-spacing:.025em!important;
 }
 
-/* Move the right information rail away from the eye and closer to the viewport edge. */
+/* Pin the right information rail close to the viewport edge, away from the eye. */
 @media(min-width:761px){
   .home-page .hero-rail-right{
-    right:clamp(12px,1.1vw,22px)!important;
-    left:calc(50% + clamp(340px,23vw,455px))!important;
+    right:4px!important;
+    left:calc(50% + clamp(430px,31vw,610px))!important;
+  }
+  .home-page .hero-rail-right .hero-rail-word,
+  .home-page .hero-rail-right .hero-rail-word:nth-child(odd),
+  .home-page .hero-rail-right .hero-rail-word:nth-child(even){
+    align-self:flex-end!important;
+    margin-left:auto!important;
+    margin-right:0!important;
+    text-align:right!important;
   }
 }
 
 @media(max-width:760px){
   body.mobile-basic.home-page .hero-rail-right{
-    right:5px!important;
-    left:76%!important;
+    right:3px!important;
+    left:80%!important;
+  }
+  body.mobile-basic.home-page .hero-rail-right .hero-rail-word,
+  body.mobile-basic.home-page .hero-rail-right .hero-rail-word:nth-child(odd),
+  body.mobile-basic.home-page .hero-rail-right .hero-rail-word:nth-child(even){
+    align-self:flex-end!important;
+    margin-left:auto!important;
+    margin-right:0!important;
+    text-align:right!important;
   }
 }
