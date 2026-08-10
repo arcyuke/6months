@@ -1,48 +1,60 @@
 @import url('https://fonts.googleapis.com/css2?family=Marck+Script&family=Neucha&display=swap');
 
 :root{
-  --sixm-hand:"Marck Script","Neucha","Segoe Print","Bradley Hand","Comic Sans MS",cursive;
-  --sixm-ui:"Helvetica Neue",Arial,sans-serif;
+  --sixm-hand:"Marck Script","Neucha","Segoe Print","Bradley Hand",cursive;
+  --sixm-ui:"Helvetica Neue","Segoe UI",Arial,sans-serif;
 }
 
+/* Information stays readable. Handwriting is reserved for expressive brand elements. */
 html,body,
 body *:not(svg):not(path){
-  font-family:var(--sixm-hand)!important;
+  font-family:var(--sixm-ui)!important;
 }
 
-body{letter-spacing:.005em!important}
-button,input,textarea,select{font-family:var(--sixm-hand)!important}
+body{
+  letter-spacing:.005em!important;
+  /* Fail-safe: the site must stay visible even if a non-critical animation script fails. */
+  opacity:1!important;
+  transform:none!important;
+}
+body.page-leaving{opacity:0!important;transform:translateY(-2px)!important}
+button,input,textarea,select{font-family:var(--sixm-ui)!important}
 
-/* Housemaid-like handwritten face is the default site voice. */
-.page-title,.section-heading h2,
-.product-description,.detail-description,
-.product-price,.product-stock,.product-badge,.detail-badge,
-.catalog-glitch-word{
+/* Expressive handwritten moments only. */
+.catalog-glitch-word,
+.hero-rail-word{
   font-family:var(--sixm-hand)!important;
+  font-style:normal!important;
 }
 
-/* These areas stay clean/ordinary so the handwritten face does not overpower the UI. */
+/* Clean UI / information typography. */
 .home-page .home-logo,
 .header-telegram,
 .product-title,.detail-title,
+.product-description,.detail-description,
+.product-price,.product-stock,.product-badge,.detail-badge,
+.page-title,.detail-section h2,.text-panel,.text-panel *,
 .history-rotator,.history-rotator *,
-.history-top,.history-accent,.history-bottom,
-.hero-rail-word,.sixm-ambient-word,
+.sixm-ambient-word,
 .main-footer,.main-footer *,
-.footer-nav,.footer-nav *{
+.footer-nav,.footer-nav *,
+.sixm-language-gate,.sixm-language-gate *{
   font-family:var(--sixm-ui)!important;
   font-style:normal!important;
 }
 
 .home-page .home-logo,
 .header-telegram,
-.hero-rail-word,.sixm-ambient-word,
 .main-footer,.main-footer *{
   letter-spacing:.08em!important;
 }
+.product-title,.detail-title{letter-spacing:.01em!important}
 
-.product-title,.detail-title{
-  letter-spacing:.01em!important;
+/* Rails are intentionally handwritten in RU and EN alike. */
+.home-page .hero-rail-word{
+  font-family:var(--sixm-hand)!important;
+  letter-spacing:.035em!important;
+  text-transform:none!important;
 }
 
 /* language gate: site stays hidden until a language is chosen */
@@ -53,8 +65,10 @@ html.sixm-lang-pending body{
   opacity:1!important;
   transform:none!important;
 }
-html.sixm-lang-pending body > *:not(.sixm-language-gate){visibility:hidden!important}
-html.sixm-lang-pending .sixm-language-gate{visibility:visible!important}
+html.sixm-lang-pending body > *:not(.sixm-language-gate):not(.sixm-cursor-dot):not(.sixm-cursor-cross){visibility:hidden!important}
+html.sixm-lang-pending .sixm-language-gate,
+html.sixm-lang-pending .sixm-cursor-dot,
+html.sixm-lang-pending .sixm-cursor-cross{visibility:visible!important}
 
 .sixm-language-gate{
   position:fixed;
@@ -97,11 +111,14 @@ html.sixm-lang-pending .sixm-language-gate{visibility:visible!important}
   font-size:30px;
   line-height:1;
   color:#fff;
+  letter-spacing:.12em;
+  text-transform:uppercase;
   text-shadow:0 0 8px rgba(255,255,255,.16);
 }
 .sixm-language-label{
   margin:0 0 22px;
-  font-size:22px;
+  font-size:15px;
+  letter-spacing:.04em;
   color:#c9c9c9;
 }
 .sixm-language-actions{
@@ -114,7 +131,8 @@ html.sixm-lang-pending .sixm-language-gate{visibility:visible!important}
   border:1px solid rgba(255,255,255,.26);
   background:#060606;
   color:#f3f3f3;
-  font-size:21px;
+  font-size:14px;
+  letter-spacing:.08em;
   cursor:pointer;
   transition:background .12s ease,border-color .12s ease,transform .12s ease;
 }
@@ -131,7 +149,7 @@ html.sixm-lang-pending .sixm-language-gate{visibility:visible!important}
 
 @media(max-width:600px){
   .sixm-language-panel{padding:30px 18px 24px}
-  .sixm-language-brand{font-size:27px}
-  .sixm-language-label{font-size:20px}
-  .sixm-language-button{font-size:19px}
+  .sixm-language-brand{font-size:25px}
+  .sixm-language-label{font-size:14px}
+  .sixm-language-button{font-size:13px}
 }
