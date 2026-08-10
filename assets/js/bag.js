@@ -1,4 +1,4 @@
-const TELEGRAM_USERNAME = 'SKIANORAK';
+const TELEGRAM_USERNAME = 'polGodaa';
 const MOBILE_BASIC = /\/mobilebasic(?:\/|$)/.test(window.location.pathname);
 
 function getCart(){try{return JSON.parse(localStorage.getItem('cart_guest'))||[]}catch{return[]}}
