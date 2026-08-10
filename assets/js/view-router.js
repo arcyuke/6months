@@ -1,52 +1,75 @@
-(() => {
-  const STORAGE_KEY = '6months-view-mode';
-  const params = new URLSearchParams(window.location.search);
-  const requested = params.get('view');
+(function () {
+  var STORAGE_KEY = '6months-view-mode';
+  var LANGUAGE_KEY = '6months-language-session';
+  var path = window.location.pathname;
+  var onMobileVersion = /\/mobilebasic(?:\/|$)/.test(path);
+  var onAdmin = /\/admin\.html$/.test(path);
 
-  function savePreference(value) {
-    try { localStorage.setItem(STORAGE_KEY, value); }
-    catch { /* routing still works without persistent storage */ }
+  function readStorage(storage, key) {
+    try { return storage.getItem(key); }
+    catch (error) { return null; }
   }
 
-  function readPreference() {
-    try { return localStorage.getItem(STORAGE_KEY); }
-    catch { return null; }
+  function writeStorage(storage, key, value) {
+    try { storage.setItem(key, value); }
+    catch (error) { /* routing still works without persistent storage */ }
   }
 
-  if (requested === 'desktop' || requested === 'mobile') savePreference(requested);
-
-  const preference = requested === 'desktop' || requested === 'mobile' ? requested : readPreference();
-  const path = window.location.pathname;
-  const onMobileVersion = /\/mobilebasic(?:\/|$)/.test(path);
-  const onAdmin = /\/admin\.html$/.test(path);
-
-  const narrowScreen = window.matchMedia('(max-width: 820px)').matches;
-  const touchDevice = window.matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0;
-  const mobileBrowser = /Android|iPhone|iPod|Mobile|IEMobile|Windows Phone|Telegram/i.test(navigator.userAgent);
-  const looksLikePhone = narrowScreen && (touchDevice || mobileBrowser);
-  const shouldUseMobile = preference === 'mobile' || (preference !== 'desktop' && looksLikePhone);
+  function getQueryParam(name) {
+    if (window.URLSearchParams) {
+      return new URLSearchParams(window.location.search).get(name);
+    }
+    var query = window.location.search.replace(/^\?/, '').split('&');
+    for (var i = 0; i < query.length; i += 1) {
+      var pair = query[i].split('=');
+      if (decodeURIComponent(pair[0] || '') === name) return decodeURIComponent(pair[1] || '');
+    }
+    return null;
+  }
 
   function cleanSearch() {
-    const next = new URLSearchParams(window.location.search);
-    next.delete('view');
-    const value = next.toString();
-    return value ? `?${value}` : '';
+    var raw = window.location.search.replace(/^\?/, '');
+    if (!raw) return '';
+    var parts = raw.split('&').filter(function (part) {
+      return decodeURIComponent((part.split('=')[0] || '')) !== 'view';
+    });
+    return parts.length ? '?' + parts.join('&') : '';
   }
 
+  var requested = getQueryParam('view');
+  if (requested === 'desktop' || requested === 'mobile') {
+    writeStorage(window.localStorage, STORAGE_KEY, requested);
+  }
+
+  var preference = (requested === 'desktop' || requested === 'mobile')
+    ? requested
+    : readStorage(window.localStorage, STORAGE_KEY);
+
+  var narrowScreen = window.matchMedia ? window.matchMedia('(max-width: 820px)').matches : window.innerWidth <= 820;
+  var touchDevice = window.matchMedia ? window.matchMedia('(pointer: coarse)').matches : false;
+  touchDevice = touchDevice || (navigator.maxTouchPoints || 0) > 0;
+  var mobileBrowser = /Android|iPhone|iPod|Mobile|IEMobile|Windows Phone|Telegram/i.test(navigator.userAgent || '');
+  var looksLikePhone = narrowScreen && (touchDevice || mobileBrowser);
+  var shouldUseMobile = preference === 'mobile' || (preference !== 'desktop' && looksLikePhone);
+
   function mobileTarget() {
-    if (/\/product_months\.html$/.test(path)) return `mobilebasic/product.html${cleanSearch()}${window.location.hash}`;
-    if (/\/bag\.html$/.test(path)) return `mobilebasic/bag.html${cleanSearch()}${window.location.hash}`;
-    if (/\/about\.html$/.test(path)) return `mobilebasic/about.html${cleanSearch()}${window.location.hash}`;
-    if (/\/privacy\.html$/.test(path)) return `mobilebasic/privacy.html${cleanSearch()}${window.location.hash}`;
-    return `mobilebasic/${cleanSearch()}${window.location.hash}`;
+    var search = cleanSearch();
+    var hash = window.location.hash || '';
+    if (/\/product_months\.html$/.test(path)) return 'mobilebasic/product.html' + search + hash;
+    if (/\/bag\.html$/.test(path)) return 'mobilebasic/bag.html' + search + hash;
+    if (/\/about\.html$/.test(path)) return 'mobilebasic/about.html' + search + hash;
+    if (/\/privacy\.html$/.test(path)) return 'mobilebasic/privacy.html' + search + hash;
+    return 'mobilebasic/' + search + hash;
   }
 
   function desktopTarget() {
-    if (/\/mobilebasic\/product\.html$/.test(path)) return `../product_months.html${cleanSearch()}${window.location.hash}`;
-    if (/\/mobilebasic\/bag\.html$/.test(path)) return `../bag.html${cleanSearch()}${window.location.hash}`;
-    if (/\/mobilebasic\/about\.html$/.test(path)) return `../about.html${cleanSearch()}${window.location.hash}`;
-    if (/\/mobilebasic\/privacy\.html$/.test(path)) return `../privacy.html${cleanSearch()}${window.location.hash}`;
-    return `../index.html${cleanSearch()}${window.location.hash}`;
+    var search = cleanSearch();
+    var hash = window.location.hash || '';
+    if (/\/mobilebasic\/product\.html$/.test(path)) return '../product_months.html' + search + hash;
+    if (/\/mobilebasic\/bag\.html$/.test(path)) return '../bag.html' + search + hash;
+    if (/\/mobilebasic\/about\.html$/.test(path)) return '../about.html' + search + hash;
+    if (/\/mobilebasic\/privacy\.html$/.test(path)) return '../privacy.html' + search + hash;
+    return '../index.html' + search + hash;
   }
 
   if (!onAdmin && !onMobileVersion && shouldUseMobile) {
@@ -57,28 +80,29 @@
     window.location.replace(desktopTarget());
     return;
   }
-  if (requested) {
-    const cleanUrl = `${window.location.pathname}${cleanSearch()}${window.location.hash}`;
-    window.history.replaceState(null, '', cleanUrl);
+
+  if (requested && window.history && window.history.replaceState) {
+    window.history.replaceState(null, '', window.location.pathname + cleanSearch() + (window.location.hash || ''));
   }
 
   if (onAdmin) return;
 
-  const languagePrefix = onMobileVersion ? '../' : '';
-  let sessionLanguage = null;
-  try { sessionLanguage = sessionStorage.getItem('6months-language-session'); }
-  catch { /* chooser will handle storage errors */ }
-
+  var sessionLanguage = readStorage(window.sessionStorage, LANGUAGE_KEY);
   if (sessionLanguage !== 'ru' && sessionLanguage !== 'en') {
     document.documentElement.classList.add('sixm-lang-pending');
-    const preloadStyle = document.createElement('style');
+    var preloadStyle = document.createElement('style');
     preloadStyle.id = 'sixm-language-preload-style';
-    preloadStyle.textContent = `html.sixm-lang-pending,html.sixm-lang-pending body{background:#000!important}html.sixm-lang-pending body{opacity:1!important;overflow:hidden!important}html.sixm-lang-pending body>*:not(.sixm-language-gate){visibility:hidden!important}html.sixm-lang-pending .sixm-language-gate{visibility:visible!important}`;
-    document.head.append(preloadStyle);
-  }
+    preloadStyle.textContent = 'html.sixm-lang-pending,html.sixm-lang-pending body{background:#000!important}' +
+      'html.sixm-lang-pending body{opacity:1!important;transform:none!important;overflow:hidden!important}' +
+      'html.sixm-lang-pending body>*:not(.sixm-language-gate):not(.sixm-cursor-dot):not(.sixm-cursor-cross){visibility:hidden!important}' +
+      'html.sixm-lang-pending .sixm-language-gate,html.sixm-lang-pending .sixm-cursor-dot,html.sixm-lang-pending .sixm-cursor-cross{visibility:visible!important}';
+    document.head.appendChild(preloadStyle);
 
-  const languageScript = document.createElement('script');
-  languageScript.src = `${languagePrefix}assets/js/language-ui.js?v=14`;
-  languageScript.async = false;
-  document.head.append(languageScript);
+    /* Never leave a browser on a black screen if the chooser script fails to load. */
+    window.setTimeout(function () {
+      if (!document.documentElement.classList.contains('sixm-lang-pending')) return;
+      if (document.querySelector('.sixm-language-gate')) return;
+      document.documentElement.classList.remove('sixm-lang-pending');
+    }, 3500);
+  }
 })();
