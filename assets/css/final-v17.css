@@ -1,0 +1,24 @@
+/* v17: final positioning + typography overrides */
+
+/* The catalog word is informational UI, so it stays in the clean site typeface. */
+.home-page .catalog-section>.fashion-word-glitch .catalog-glitch-word{
+  font-family:var(--sixm-ui,"Helvetica Neue","Segoe UI",Arial,sans-serif)!important;
+  font-style:normal!important;
+  font-weight:350!important;
+  letter-spacing:.025em!important;
+}
+
+/* Move the right information rail away from the eye and closer to the viewport edge. */
+@media(min-width:761px){
+  .home-page .hero-rail-right{
+    right:clamp(12px,1.1vw,22px)!important;
+    left:calc(50% + clamp(340px,23vw,455px))!important;
+  }
+}
+
+@media(max-width:760px){
+  body.mobile-basic.home-page .hero-rail-right{
+    right:5px!important;
+    left:76%!important;
+  }
+}
