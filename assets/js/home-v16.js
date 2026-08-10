@@ -1,8 +1,8 @@
 (function () {
-  var RU_LEFT = ['ручная обработка','маленькие партии','светоотражающие детали','широкий крой','first drop','2026'];
-  var RU_RIGHT = ['каждая вещь отличается','кастом под заказ','ручная + машинная работа','чёрная база','заказ через telegram','6 months'];
-  var EN_LEFT = ['hand finished','small runs','reflective details','baggy fit','first drop','2026'];
-  var EN_RIGHT = ['each piece differs','custom order','hand + machine made','black base','order via telegram','6 months'];
+  var RU_LEFT = ['ручная обработка','маленькие партии','reflective под прорезями','oversize футболка','baggy джинсы','first drop'];
+  var RU_RIGHT = ['каждая вещь отличается','остатки по размерам','custom order','ручная + машинная работа','заказ через telegram','2026'];
+  var EN_LEFT = ['hand finished','small runs','reflective under cutouts','oversized tee','baggy jeans','first drop'];
+  var EN_RIGHT = ['each piece differs','stock by size','custom order','hand + machine made','order via telegram','2026'];
 
   function currentLanguage() {
     if (window.SIXM_LANG && typeof window.SIXM_LANG.get === 'function') return window.SIXM_LANG.get();
